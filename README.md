@@ -1,11 +1,31 @@
-# mini-workflow-engine
-A lightweight workflow engine built from scratch with Java and Python versions.
-
 # Mini Workflow Engine
 
 A lightweight workflow engine built from scratch to understand how modern workflow systems (like LangFlow, Airflow, or internal orchestration engines) are designed and executed.
 
 ---
+
+## Current Scope (v1)
+
+This version implements a **minimal linear workflow engine** with the following capabilities:
+
+Supported:
+- Sequential execution only
+- Fixed flow: `Start -> LLM -> End`
+- Executor-based node dispatch
+- VariablePool-based data passing between nodes
+- Mock LLM execution (no external API)
+
+Not yet supported:
+- Conditional branching
+- Parallel execution (DAG)
+- Retry / timeout mechanisms
+- Streaming callbacks
+- Plugin/tool integrations
+- Real LLM API calls
+- Generalized variable reference resolution
+
+---
+
 
 ## 1. Overview
 
@@ -93,13 +113,15 @@ Responsible for managing runtime data.
 
 Key components:
 - `VariablePool`
-- `NodeState`
+- `NodeExecutionContext`
+- `NodeExecutionStatus`
 - `NodeRunResult`
 
 Responsibility:
 - Store intermediate results
 - Enable data passing between nodes
 - Track execution state
+- Provide execution context to executors
 
 ---
 
@@ -199,6 +221,35 @@ This JSON represents a minimal workflow graph where:
 - Execution starts at `start`
 - Flows into `llm`
 - Ends at `end`
+---
+
+## Demo Result
+
+Example input:
+
+```text
+{userInput=Hello}
+```
+
+Execution flow:
+
+```text
+Start -> LLM -> End
+```
+
+Output:
+
+```text
+Status : SUCCESS
+Outputs: {content=Mock LLM response: Hello}
+```
+
+This demonstrates:
+- DSL construction works
+- Engine correctly orchestrates execution
+- Executors handle node-specific logic
+- VariablePool enables data flow across nodes
+
 ---
 
 ## 6. Design Principles
